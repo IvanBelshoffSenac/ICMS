@@ -1,0 +1,39 @@
+{
+  "name": "icms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./build/index.js",
+    "dev": "ts-node ./src/index.ts",
+    "force": "ts-node ./src/force.ts",
+    "force-prod": "node ./build/force.js",
+    "typeorm": "typeorm-ts-node-commonjs -d ./src/server/database/data-source.ts",
+    "build": "tsc",
+    "migration:generate": "typeorm-ts-node-commonjs -d ./src/server/database/data-source.ts migration:generate ./src/server/database/migrations/default",
+    "migration:run": "typeorm-ts-node-commonjs -d ./src/server/database/data-source.ts migration:run",
+    "migration:revert": "typeorm-ts-node-commonjs -d ./src/server/database/data-source.ts migration:revert"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
+    "fs-extra": "^11.3.2",
+    "mysql2": "^3.15.3",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.10",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.27",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^24.10.0",
+    "@types/node-cron": "^3.0.11",
+    "@types/nodemailer": "^7.0.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
