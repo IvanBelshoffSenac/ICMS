@@ -29,14 +29,19 @@ USER root
 COPY package*.json ./
 RUN npm ci --only=production && npm cache clean --force
 
-# Copiar código fonte
-COPY . .
+# Copiar código fonte (excluindo storage e temp)
+COPY src/ ./src/
+COPY tsconfig.json ./
+COPY .env.docker ./.env
 
 # Compilar TypeScript
 RUN npm run build
 
-# Criar diretórios para logs, temp e storage
+# Criar diretórios necessários
 RUN mkdir -p logs temp storage
+
+# Configurar volume para persistir dados
+VOLUME ["/app/storage"]
 
 # Configurar permissões
 RUN chown -R pwuser:pwuser /app
