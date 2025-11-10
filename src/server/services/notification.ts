@@ -212,14 +212,7 @@ export class NotificationService {
      */
     private gerarCorpoEmail(resultado: IServiceResult, modoExecucao: 'Agendado' | 'Forçado' = 'Agendado'): string {
 
-        const dataExecucao = new Date().toLocaleString('pt-BR', {
-            timeZone: 'America/Sao_Paulo',
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        const dataExecucao = format(new Date(), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR });
 
         let corpoEmail = `
         <!DOCTYPE html>
@@ -246,9 +239,20 @@ export class NotificationService {
             </div>
         `;
 
+        interface IAtributes {
+            taxaSucesso: number;
+            statusClass: string;
+        }
 
-        const taxaSucesso = Math.round((resultado.sucessos / resultado.tasks.length) * 100);
-        const statusClass = taxaSucesso >= 90 ? 'success' : taxaSucesso >= 70 ? 'warning' : 'error';
+        const atributes: IAtributes = {} as IAtributes;
+
+        if (resultado.tasks.length === 0 && resultado.sucessos === 0) {
+            atributes.taxaSucesso = 100;
+            atributes.statusClass = 'success';
+        } else {
+            atributes.taxaSucesso = Math.round((resultado.sucessos / resultado.tasks.length) * 100);
+            atributes.statusClass = atributes.taxaSucesso >= 90 ? 'success' : atributes.taxaSucesso >= 70 ? 'warning' : 'error';
+        }
 
         // Extrair regiões únicas dos tasks
         const regioesApuradas = [...new Set(resultado.tasks.map(task => task.regiao))].sort();
@@ -281,7 +285,7 @@ export class NotificationService {
                 <div class="stats">❌ <strong>Falhas:</strong> ${resultado.falhas}</div>
                 <br>
                 
-                <div class="stats ${statusClass}">🎯 <strong>Taxa de Sucesso:</strong> ${taxaSucesso}%</div>
+                <div class="stats ${atributes.statusClass}">🎯 <strong>Taxa de Sucesso:</strong> ${atributes.taxaSucesso}%</div>
                 <br>
                 
                 <div class="stats">📅 <strong>Próxima Execução Agendada:</strong> ${dataHoraCompleta} (${textoProximaExecucao})</div>
@@ -312,8 +316,8 @@ export class NotificationService {
             port: 587,
             secure: false,
             auth: {
-                user: process.env.MAIL_USERNAME || "no-reply@es.senac.br",
-                pass: process.env.MAIL_PASSWORD || "gHak8t%0Ad"
+                user: process.env.MAIL_USERNAME,
+                pass: process.env.MAIL_PASSWORD
             },
             tls: {
                 maxVersion: 'TLSv1.3',
