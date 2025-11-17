@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./build/index.js",
-    "dev": "ts-node ./src/index.ts",
+    "dev": "ts-node --inspect ./src/index.ts",
     "force": "ts-node ./src/force.ts",
     "force-prod": "node ./build/force.js",
     "typeorm": "typeorm-ts-node-commonjs -d ./src/server/database/data-source.ts",
